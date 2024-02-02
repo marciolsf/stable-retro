@@ -12,3 +12,6 @@ pip3 install -e .
 
 pip3 install stable_baselines3[extra]
 
+sudo apt-get install capnproto libcapnp-dev libqt5opengl5-dev qtbase5-dev
+
+sudo apt-get install libbz2-dev
