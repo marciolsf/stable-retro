@@ -1,0 +1,17 @@
+/*install WSL Ubuntu*/
+
+
+sudo apt-get update
+sudo apt-get install python3 python3-pip git zlib1g-dev libopenmpi-dev ffmpeg
+sudo pip3 install -U virtualenv
+virtualenv --system-site-packages -p python3 ~/vretro
+source ~/vretro/bin/activate
+cd /mnt/c/Users/iamma/source/repos/stable-retro
+pip3 install -e .
+
+
+pip3 install stable_baselines3[extra]
+
+sudo apt-get install capnproto libcapnp-dev libqt5opengl5-dev qtbase5-dev
+
+sudo apt-get install libbz2-dev
