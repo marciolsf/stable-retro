@@ -7,6 +7,14 @@
     "score": {
       "address": 1524,
       "type": ">n6"
+    },
+    "velocity": {
+      "address": 140,
+      "type": "|d1"
+    },
+    "y": {
+      "address": 1171,
+      "type": "|u1"
     }
   }
 }
