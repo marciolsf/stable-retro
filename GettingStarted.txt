@@ -7,44 +7,72 @@ I wrote down the steps in an easy way for a dummie like me to follow.
 /*install Ubuntu 22.04 via WSL*/
 
 * Pre-requirements
-sudo apt-get update
-sudo apt-get install python3 python3-pip git zlib1g-dev libopenmpi-dev ffmpeg
+    sudo apt-get update
+    sudo apt-get install python3 python3-pip git zlib1g-dev libopenmpi-dev ffmpeg
 
 * Setup virtual environment
-sudo pip3 install -U virtualenv
-virtualenv --system-site-packages -p python3 ~/vretro
-source ~/vretro/bin/activate
+    sudo pip3 install -U virtualenv
+    virtualenv --system-site-packages -p python3 ~/vretro
+    source ~/vretro/bin/activate
 
 * clone the repo (mine, or the original)
     ### Note that the git clone has to be done inside of the WSL machine -- Strange enough, it fails to compile
         if the repo is accessed through the windows CIFS mount inside /mnt/c
 
-git clone https://github.com/Farama-Foundation/stable-retro.git
-
-cd stagle-retro
-pip3 install -e .
-
-pip3 install stable_baselines3[extra]
+    git clone https://github.com/Farama-Foundation/stable-retro.git
+    cd stagle-retro
+    pip3 install -e .
+    pip3 install stable_baselines3[extra]
 
 
 **** Running the provided example script
 
 * Import your legally acquired roms. Your ROMS need to match the checksum (see below).
-python -m retro.import "/location/of/your/roms"
+    python -m retro.import "/location/of/your/roms"
 
 * navigate to the examples directory and start the environment
-cd ~/stable-retro/retro/examples
-python3 ppo.py --game='Battletoads-Nes'
+    cd ~/stable-retro/retro/examples
+    python3 ppo.py --game='Battletoads-Nes'
 
 
 **** Additional requirements to setup the Integration UI (only needed if you are interested in creating files for your own roms)
 
 * Pre-requirements
-sudo apt-get install capnproto libcapnp-dev libqt5opengl5-dev qtbase5-dev cmake
+    sudo apt-get install capnproto libcapnp-dev libqt5opengl5-dev qtbase5-dev cmake
 
 * Build steps
-cmake . -DBUILD_UI=ON -UPYLIB_DIRECTORY
-make -j$(grep -c ^processor /proc/cpuinfo)
+    cmake . -DBUILD_UI=ON -UPYLIB_DIRECTORY
+    make -j$(grep -c ^processor /proc/cpuinfo)
 
 * the resulting binary will be created at the location root of the repo
- ./gym-retro-integration 
+    ./gym-retro-integration 
+
+
+**** Folder structure & loading your ROMs (and dealing with checksums)
+
+Each integrated rom has a folder with the naming convention "Game-Console", for example:
+    * Megaman-Nes
+    * AddamsFamily-Genesis
+    * Adventure-Atari2600
+
+The integration folders are located at ~/stable-retro/retro/data, and it will be under one of the following folders
+    * stable
+    * experimental
+    * contrib
+
+Each folder has at least the following files:
+    * data.json -- Holds the memory locations for important items such as score, lives, etc
+    * metadata.json -- Primarily which default ROM States to load, but can also store reward formulas
+    * scenario.json -- Reward weights
+    * varios .state state files
+    * rom-sha -- the sha1 checksum of the ROM file
+
+** Checksums
+    It seems that most of the checksums are based off of their US versions. If you would like to use a different rom, you will need to 
+    use a utility to calculate the SHA-1. The integration UI tool can calculate the sha-1 for you, but there's nothing special about the 
+    calculation itself -- any checksum calculator can get you the value you need.
+
+** States
+    If you would like to integrate your own roms, you will need to setup your state files. This is just a regular state file that your emulator
+    can create (and again, the Integration tool can do that.) The state file should start at the beginning of the level, and not at the beginning
+    of the game (so that the environment doesn't spend time learning the menus, hardly exciting.)
