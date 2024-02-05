@@ -1,18 +1,50 @@
-/*install WSL Ubuntu*/
+The setup guide for stable-retro is currently only in YouTube (https://www.youtube.com/watch?v=vPnJiUR21Og), so after watching it a few times, 
+I wrote down the steps in an easy way for a dummie like me to follow.
 
 
+**** Steps to get started with stable-retro on Windows ****
+
+/*install Ubuntu 22.04 via WSL*/
+
+* Pre-requirements
 sudo apt-get update
 sudo apt-get install python3 python3-pip git zlib1g-dev libopenmpi-dev ffmpeg
+
+* Setup virtual environment
 sudo pip3 install -U virtualenv
 virtualenv --system-site-packages -p python3 ~/vretro
 source ~/vretro/bin/activate
-cd /mnt/c/Users/iamma/source/repos/stable-retro
-pip3 install -e .
 
+* clone the repo (mine, or the original)
+    ### Note that the git clone has to be done inside of the WSL machine -- Strange enough, it fails to compile
+        if the repo is accessed through the windows CIFS mount inside /mnt/c
+
+git clone https://github.com/Farama-Foundation/stable-retro.git
+
+cd stagle-retro
+pip3 install -e .
 
 pip3 install stable_baselines3[extra]
 
+
+**** Running the provided example script
+
+* Import your legally acquired roms. Your ROMS need to match the checksum (see below).
+python -m retro.import "/location/of/your/roms"
+
+* navigate to the examples directory and start the environment
+cd ~/stable-retro/retro/examples
+python3 ppo.py --game='Battletoads-Nes'
+
+
+**** Additional requirements to setup the Integration UI (only needed if you are interested in creating files for your own roms)
+
+* Pre-requirements
 sudo apt-get install capnproto libcapnp-dev libqt5opengl5-dev qtbase5-dev cmake
 
+* Build steps
 cmake . -DBUILD_UI=ON -UPYLIB_DIRECTORY
 make -j$(grep -c ^processor /proc/cpuinfo)
+
+* the resulting binary will be created at the location root of the repo
+ ./gym-retro-integration 
